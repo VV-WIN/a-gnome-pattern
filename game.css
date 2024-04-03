@@ -1,0 +1,21 @@
+:root {
+    --pixel-size: 2px;
+    --grid-cell: calc(var(--pixel-size) * 16);
+}
+
+.camera {
+    width: calc(var(--pixel-size) * 160);
+    height: calc(var(--pixel-size) * 144);
+    overflow: hidden;
+    background-color: #c5ffb8;
+    position: relative;
+}
+
+.map {
+    image-rendering: pixelated;
+    background-image: url("assets/GameMap.png");
+    background-size: 100%;
+    width: calc(13 * var(--grid-cell));
+    height: calc(10 * var(--grid-cell));
+    position: relative;
+}
