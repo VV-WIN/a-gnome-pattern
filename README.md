@@ -4,5 +4,8 @@ A game inspired by a moment at the lake with my partner and our dog where we enc
 ## General Gameplay and Mechanics
 Using the directional keys or WASD, simply walk the pattern.
 
+## Resources Used
+[Sprout Land's Asset Pack by Cup Nooble](https://cupnooble.itch.io/sprout-lands-asset-pack)
+
 ## Personal Goals
 To quiet the fear that tells me I *can't*. You **can** and **will** do this. I believe in you, me. xoxo 
