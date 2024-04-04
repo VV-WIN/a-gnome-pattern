@@ -1,5 +1,5 @@
 :root {
-    --pixel-size: 6px;
+    --pixel-size: 2px;
     --grid-cell: calc(var(--pixel-size) * 16);
     --bg: #c5ffb8;
 }
@@ -31,40 +31,6 @@ body {
     image-rendering: pixelated;
  }
 
-.face-up {
-     top: calc(var(--pixel-size) * -32)
- }
-
-.face-left {
-    top: calc(var(--pixel-size) * -64)
-}
-
-.face-right {
-    top: calc(var(--pixel-size) * -96)
-}
- 
-.character {
-    width: calc(var(--pixel-size) * 32);
-    height: calc(var(--pixel-size) * 32);
-    overflow: hidden;
-    position: relative;
-    margin: 0 auto;
-}
-
-.character-spritesheet {
-    animation: moveSpritesheet 1s steps(4) infinite;
-    width: calc(128 * var(--pixel-size));
-    position: absolute;
-}
-
-@keyframes moveSpritesheet {
-    from {
-        transform: translate3d(0px , 0, 0);
-    }
-    to {transform: translate3d(-100%, 0 , 0);
-    }
-}
-
 .camera {
     width: calc(var(--pixel-size) * 160);
     height: calc(var(--pixel-size) * 144);
@@ -80,4 +46,41 @@ body {
     width: calc(13 * var(--grid-cell));
     height: calc(10 * var(--grid-cell));
     position: relative;
+}
+ 
+.character {
+    width: calc( var(--grid-cell)* 2 );
+    height: calc( var(--grid-cell)* 2 );
+    position: absolute;
+    overflow:hidden;
+ }
+
+.character-spritesheet {
+    position: absolute;
+    background: url("assets/BasicCharaSpritesheet.png") no-repeat no-repeat;
+    background-size: 100%;
+    width: calc( var(--grid-cell)* 8 );
+    height: calc( var(--grid-cell)* 8 );
+}
+
+.character[facing="right"] .character-spritesheet {
+    background-position-y: calc( var(--pixel-size) * -96 );
+ }
+ .character[facing="up"] .character-spritesheet {
+    background-position-y: calc( var(--pixel-size) * -32 );
+ }
+ .character[facing="left"] .character-spritesheet {
+    background-position-y: calc( var(--pixel-size) * -64 );
+ }
+ .character[walking="true"] .character-spritesheet {
+    animation: walkAnimation 0.6s steps(4) infinite; 
+ }
+
+@keyframes walkAnimation {
+    from {
+      transform: translate3d(0%,0%,0);
+    }
+    to {
+      transform: translate3d(-100%,0%,0);
+    }
 }
