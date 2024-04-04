@@ -1,5 +1,5 @@
 :root {
-    --pixel-size: 2px;
+    --pixel-size: 6px;
     --grid-cell: calc(var(--pixel-size) * 16);
     --bg: #c5ffb8;
 }
@@ -9,26 +9,61 @@
        --pixel-size: 3px;
     }
  }
- @media( min-width: 1000px ) {
+
+@media( min-width: 1000px ) {
     :root {
        --pixel-size: 4px;
     }
  }
 
- html, body {
+html, body {
     height: 100%;
  }
 
- body {
+body {
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
  }
 
- .pixel-art {
+.pixel-art {
     image-rendering: pixelated;
  }
+
+.face-up {
+     top: calc(var(--pixel-size) * -32)
+ }
+
+.face-left {
+    top: calc(var(--pixel-size) * -64)
+}
+
+.face-right {
+    top: calc(var(--pixel-size) * -96)
+}
+ 
+.character {
+    width: calc(var(--pixel-size) * 32);
+    height: calc(var(--pixel-size) * 32);
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+}
+
+.character-spritesheet {
+    animation: moveSpritesheet 1s steps(4) infinite;
+    width: calc(128 * var(--pixel-size));
+    position: absolute;
+}
+
+@keyframes moveSpritesheet {
+    from {
+        transform: translate3d(0px , 0, 0);
+    }
+    to {transform: translate3d(-100%, 0 , 0);
+    }
+}
 
 .camera {
     width: calc(var(--pixel-size) * 160);
