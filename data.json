@@ -10,7 +10,8 @@
 	"customFields" : {},
 	"layers": [
 		"Background.png",
-		"Foreground.png"
+		"Foreground.png",
+		"IntGrid.png"
 	],
 	"entities" : {}
 }

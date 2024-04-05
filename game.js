@@ -42,15 +42,15 @@ const placeCharacter = () => {
    }
    character.setAttribute("walking", direction ? "true" : "false");
 
-   //Limits (gives the illusion of walls)
-   const leftLimit = -8;
-   const rightLimit = (16 * 22)+8;
-   const topLimit = -8 + 32;
-   const bottomLimit = (22 * 7);
-   if (x < leftLimit) { x = leftLimit; }
-   if (x > rightLimit) { x = rightLimit; }
-   if (y < topLimit) { y = topLimit; }
-   if (y > bottomLimit) { y = bottomLimit; }
+   // //Limits (gives the illusion of walls)
+   // const leftLimit = -8;
+   // const rightLimit = (16 * 32)+8;
+   // const topLimit = -8 + 32;
+   // const bottomLimit = (32 * 7);
+   // if (x < leftLimit) { x = leftLimit; }
+   // if (x > rightLimit) { x = rightLimit; }
+   // if (y < topLimit) { y = topLimit; }
+   // if (y > bottomLimit) { y = bottomLimit; }
 
    //Camera Look Ahead
    const LOOKAHEAD_DISTANCE = 6;
