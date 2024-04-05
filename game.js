@@ -22,7 +22,13 @@ let camY = y;
 let pressedDirections = []; //State of which arrow keys we are holding down
 const speed = 1; //How fast the character moves in pixels per frame
 
-// Linear interpolation which will be used to move the cam smoothly
+//Pinning the camera to a position
+let pin_to_position = null; //[x,y]
+function toggle_pin_to_position() {
+   pin_to_position = pin_to_position ? null : [100,10];
+}
+
+//Linear interpolation which will be used to move the cam smoothly
 function lerp(currentVal, desiredVal, time) {
    return currentVal * (1-time) + desiredVal * time;
 }
@@ -52,6 +58,22 @@ const placeCharacter = () => {
    if (y < topLimit) { y = topLimit; }
    if (y > bottomLimit) { y = bottomLimit; }
 
+   //Camera Look Ahead
+   const LOOKAHEAD_DISTANCE = 6;
+   let lahX = 0;
+   let lahY = 0;
+   if (direction === directions.left) { lahX -= LOOKAHEAD_DISTANCE; }
+   if (direction === directions.right) { lahX += LOOKAHEAD_DISTANCE; }
+   if (direction === directions.up) { lahY -= LOOKAHEAD_DISTANCE; }
+   if (direction === directions.down) { lahY += LOOKAHEAD_DISTANCE; }
+   
+   let camDesX = x + lahX;
+   let camDesY = y + lahY;
+   
+   //Update camera values
+   const LERP_SPEED = 0.1;
+   camX = lerp(camX, camDesX, LERP_SPEED);
+   camY = lerp(camY, camDesY, LERP_SPEED);
 
    const CAMERA_LEFT_OFFSET_PX = 66;
    const CAMERA_TOP_OFFSET_PX = 42;
