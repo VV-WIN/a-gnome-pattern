@@ -17,8 +17,15 @@ const map = document.querySelector(".map");
 //start in the middle of the map
 let x = 90;
 let y = 34;
+let camX = x; 
+let camY = y; 
 let pressedDirections = []; //State of which arrow keys we are holding down
 const speed = 1; //How fast the character moves in pixels per frame
+
+// Linear interpolation which will be used to move the cam smoothly
+function lerp(currentVal, desiredVal, time) {
+   return currentVal * (1-time) + desiredVal * time;
+}
 
 const placeCharacter = () => {
    const pixelSize = parseInt(
@@ -50,8 +57,8 @@ const placeCharacter = () => {
    const CAMERA_TOP_OFFSET_PX = 42;
 
    //Update camera
-   const camera_transform_left = -x*pixelSize+(pixelSize * CAMERA_LEFT_OFFSET_PX);
-   const camera_transform_top = -y*pixelSize+(pixelSize * CAMERA_TOP_OFFSET_PX);
+   const camera_transform_left = -camX*pixelSize+(pixelSize * CAMERA_LEFT_OFFSET_PX);
+   const camera_transform_top = -camY*pixelSize+(pixelSize * CAMERA_TOP_OFFSET_PX);
    map.style.transform = `translate3d( ${camera_transform_left}px, ${camera_transform_top}px, 0 )`;
 
    //Update character
