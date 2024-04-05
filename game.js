@@ -22,12 +22,6 @@ let camY = y;
 let pressedDirections = []; //State of which arrow keys we are holding down
 const speed = 1; //How fast the character moves in pixels per frame
 
-//Pinning the camera to a position
-let pin_to_position = null; //[x,y]
-function toggle_pin_to_position() {
-   pin_to_position = pin_to_position ? null : [100,10];
-}
-
 //Linear interpolation which will be used to move the cam smoothly
 function lerp(currentVal, desiredVal, time) {
    return currentVal * (1-time) + desiredVal * time;
@@ -50,9 +44,9 @@ const placeCharacter = () => {
 
    //Limits (gives the illusion of walls)
    const leftLimit = -8;
-   const rightLimit = (16 * 11)+8;
+   const rightLimit = (16 * 22)+8;
    const topLimit = -8 + 32;
-   const bottomLimit = (16 * 7);
+   const bottomLimit = (22 * 7);
    if (x < leftLimit) { x = leftLimit; }
    if (x > rightLimit) { x = rightLimit; }
    if (y < topLimit) { y = topLimit; }
