@@ -24,10 +24,13 @@ const speed = 1; //How fast the character moves in pixels per frame
 
 //Linear interpolation which will be used to move the cam smoothly
 function lerp(currentVal, desiredVal, time) {
-   return currentVal * (1-time) + desiredVal * time;
+   return currentVal +(desiredVal - currentVal) * time;
 }
 
-const placeCharacter = () => {
+function easeOutQuad(t) { return 1 - (1-t) * (1-t); }
+
+const placeCharacter = (currentTime, startTime) => {
+   console.log("placeCharacter", startTime, currentTime);
    const pixelSize = parseInt(
        getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
    );
@@ -56,18 +59,21 @@ const placeCharacter = () => {
    const LOOKAHEAD_DISTANCE = 6;
    let lahX = 0;
    let lahY = 0;
-   if (direction === directions.left) { lahX -= LOOKAHEAD_DISTANCE; }
-   if (direction === directions.right) { lahX += LOOKAHEAD_DISTANCE; }
-   if (direction === directions.up) { lahY -= LOOKAHEAD_DISTANCE; }
-   if (direction === directions.down) { lahY += LOOKAHEAD_DISTANCE; }
+   // if (direction === directions.left) { lahX -= LOOKAHEAD_DISTANCE; }
+   // if (direction === directions.right) { lahX += LOOKAHEAD_DISTANCE; }
+   // if (direction === directions.up) { lahY -= LOOKAHEAD_DISTANCE; }
+   // if (direction === directions.down) { lahY += LOOKAHEAD_DISTANCE; }
    
    let camDesX = x + lahX;
    let camDesY = y + lahY;
    
    //Update camera values
-   const LERP_SPEED = 0.1;
-   camX = lerp(camX, camDesX, LERP_SPEED);
-   camY = lerp(camY, camDesY, LERP_SPEED);
+   const duration = 100; // ms
+   let t = (currentTime - startTime)/duration; // .1 is 10% of the way to the destination
+   t = Math.max(0, Math.min(1, t)); // Clamp to 0-1
+   t = easeOutQuad(t); // Ease out the value
+   camX = lerp(camX, camDesX, t);
+   camY = lerp(camY, camDesY, t);
 
    const CAMERA_LEFT_OFFSET_PX = 66;
    const CAMERA_TOP_OFFSET_PX = 42;
@@ -84,16 +90,17 @@ const placeCharacter = () => {
 //Set up the game loop
 let previousMs;
 const stepTime = 1 / 60;
-const tick = (timestampMs) => {
+let lastMoveTime = 0;
+const tick = (currentTimeMs) => {
    if (previousMs === undefined) {
-      previousMs = timestampMs;
+      previousMs = currentTimeMs;
    }
-   let delta = (timestampMs - previousMs) / 1000;
+   let delta = (currentTimeMs - previousMs) / 1000;
    while (delta >= stepTime) {
-      placeCharacter();
+      placeCharacter(currentTimeMs, lastMoveTime);
       delta -= stepTime;
    }
-   previousMs = timestampMs - delta * 1000; // Make sure we don't lose unprocessed (delta) time
+   previousMs = currentTimeMs - delta * 1000; // Make sure we don't lose unprocessed (delta) time
 
    //Recapture the callback to be able to shut it off
    requestAnimationFrame(tick);
@@ -104,6 +111,7 @@ requestAnimationFrame(tick); //kick off the first step!
 /* Direction key state */
 document.addEventListener("keydown", (e) => {
    const dir = keys[e.code];
+   lastMoveTime = performance.now();
    if (dir && pressedDirections.indexOf(dir) === -1) {
       pressedDirections.unshift(dir)
    }
