@@ -1,18 +1,26 @@
-const directions = {
+const CAMERA_LEFT_OFFSET_PX = 66;
+const CAMERA_TOP_OFFSET_PX = 42;
+const LOOKAHEAD_DISTANCE = 20;
+
+const DIRECTION = {
    up: "up",
    down: "down",
    left: "left",
    right: "right",
 }
-const keys = {
-   'ArrowUp': directions.up,
-   'ArrowLeft': directions.left,
-   'ArrowRight': directions.right,
-   'ArrowDown': directions.down,
+
+const KEY_TO_DIRECTION = {
+   'ArrowUp': DIRECTION.up,
+   'ArrowLeft': DIRECTION.left,
+   'ArrowRight': DIRECTION.right,
+   'ArrowDown': DIRECTION.down,
 }
 
 const character = document.querySelector(".character");
 const map = document.querySelector(".map");
+const pixelSize = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
+);
 
 //start in the middle of the map
 let x = 90;
@@ -20,27 +28,24 @@ let y = 34;
 let camX = x; 
 let camY = y; 
 let pressedDirections = []; //State of which arrow keys we are holding down
-const speed = 1; //How fast the character moves in pixels per frame
+let speed = 1; //How fast the character moves in pixels per frame
 
 //Linear interpolation which will be used to move the cam smoothly
 function lerp(currentVal, desiredVal, time) {
    return currentVal +(desiredVal - currentVal) * time;
 }
 
-function easeOutQuad(t) { return 1 - (1-t) * (1-t); }
+function easeInQuad(t) { return t*t; }
 
-const placeCharacter = (currentTime, startTime) => {
-   console.log("placeCharacter", startTime, currentTime);
-   const pixelSize = parseInt(
-       getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
-   );
+const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
+   console.log("placeCharacter", lastMoveTimeMs, currentTimeMs);
 
    const direction = pressedDirections[0];
    if (direction) {
-      if (direction === directions.right) {x += speed;}
-      if (direction === directions.left) {x -= speed;}
-      if (direction === directions.down) {y += speed;}
-      if (direction === directions.up) {y -= speed;}
+      if (direction === DIRECTION.right) {x += speed;}
+      if (direction === DIRECTION.left) {x -= speed;}
+      if (direction === DIRECTION.down) {y += speed;}
+      if (direction === DIRECTION.up) {y -= speed;}
       character.setAttribute("facing", direction);
    }
    character.setAttribute("walking", direction ? "true" : "false");
@@ -56,69 +61,66 @@ const placeCharacter = (currentTime, startTime) => {
    // if (y > bottomLimit) { y = bottomLimit; }
 
    //Camera Look Ahead
-   const LOOKAHEAD_DISTANCE = 6;
    let lahX = 0;
    let lahY = 0;
-   // if (direction === directions.left) { lahX -= LOOKAHEAD_DISTANCE; }
-   // if (direction === directions.right) { lahX += LOOKAHEAD_DISTANCE; }
-   // if (direction === directions.up) { lahY -= LOOKAHEAD_DISTANCE; }
-   // if (direction === directions.down) { lahY += LOOKAHEAD_DISTANCE; }
+   // if (direction === DIRECTION.left) { lahX -= LOOKAHEAD_DISTANCE; }
+   // if (direction === DIRECTION.right) { lahX += LOOKAHEAD_DISTANCE; }
+   // if (direction === DIRECTION.up) { lahY -= LOOKAHEAD_DISTANCE; }
+   // if (direction === DIRECTION.down) { lahY += LOOKAHEAD_DISTANCE; }
    
    let camDesX = x + lahX;
    let camDesY = y + lahY;
    
-   //Update camera values
-   const duration = 100; // ms
-   let t = (currentTime - startTime)/duration; // .1 is 10% of the way to the destination
+   // Calculate camera position
+   const camCatchupTime = 1000;
+   let t = (currentTimeMs - lastMoveTimeMs) / camCatchupTime; // Time from 0-1
    t = Math.max(0, Math.min(1, t)); // Clamp to 0-1
-   t = easeOutQuad(t); // Ease out the value
+   t = easeInQuad(t); // Ease in the value
    camX = lerp(camX, camDesX, t);
    camY = lerp(camY, camDesY, t);
 
-   const CAMERA_LEFT_OFFSET_PX = 66;
-   const CAMERA_TOP_OFFSET_PX = 42;
+   // Update camera
+   const camTransformLeft = -camX * pixelSize + (pixelSize * CAMERA_LEFT_OFFSET_PX);
+   const camTransformTop = -camY * pixelSize + (pixelSize * CAMERA_TOP_OFFSET_PX);
+   map.style.transform = `translate3d( ${camTransformLeft}px, ${camTransformTop}px, 0 )`;
 
-   //Update camera
-   const camera_transform_left = -camX*pixelSize+(pixelSize * CAMERA_LEFT_OFFSET_PX);
-   const camera_transform_top = -camY*pixelSize+(pixelSize * CAMERA_TOP_OFFSET_PX);
-   map.style.transform = `translate3d( ${camera_transform_left}px, ${camera_transform_top}px, 0 )`;
-
-   //Update character
-   character.style.transform = `translate3d( ${x*pixelSize}px, ${y*pixelSize}px, 0 )`;
+   // Update character
+   character.style.transform = `translate3d( ${x * pixelSize}px, ${y * pixelSize}px, 0 )`;
 }
 
-//Set up the game loop
-let previousMs;
-const stepTime = 1 / 60;
-let lastMoveTime = 0;
-const tick = (currentTimeMs) => {
-   if (previousMs === undefined) {
-      previousMs = currentTimeMs;
-   }
-   let delta = (currentTimeMs - previousMs) / 1000;
-   while (delta >= stepTime) {
-      placeCharacter(currentTimeMs, lastMoveTime);
-      delta -= stepTime;
-   }
-   previousMs = currentTimeMs - delta * 1000; // Make sure we don't lose unprocessed (delta) time
+// Set up the game loop
+const frameDuration = 1 / 60;
+let previousTickMs = 0;
+let lastInputTimeMs = 0;
 
-   //Recapture the callback to be able to shut it off
+const tick = (currentTimeMs) => {
+   previousTickMs = currentTimeMs;
+   let delta = (currentTimeMs - previousTickMs) / 1000;
+   while (delta >= frameDuration) {
+      moveCharacter(lastInputTimeMs, currentTimeMs);
+      delta -= frameDuration;
+   }
+   // Make sure we don't lose unprocessed (delta) time
+   previousTickMs = currentTimeMs - delta * 1000;
+
+   // Schedule the next frame
    requestAnimationFrame(tick);
 }
-requestAnimationFrame(tick); //kick off the first step!
+// Start the game loop
+requestAnimationFrame(tick);
 
 
 /* Direction key state */
 document.addEventListener("keydown", (e) => {
-   const dir = keys[e.code];
-   lastMoveTime = performance.now();
+   const dir = KEY_TO_DIRECTION[e.code];
    if (dir && pressedDirections.indexOf(dir) === -1) {
+      lastInputTimeMs = performance.now();
       pressedDirections.unshift(dir)
    }
 })
 
 document.addEventListener("keyup", (e) => {
-   const dir = keys[e.code];
+   const dir = KEY_TO_DIRECTION[e.code];
    const index = pressedDirections.indexOf(dir);
    if (index > -1) {
       pressedDirections.splice(index, 1)
