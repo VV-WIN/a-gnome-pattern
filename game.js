@@ -1,6 +1,10 @@
+// Defing the dimensions of the game map and pizel size here to keep the game logic separate from the CSS
+const TILE_SIZE_PX = 4; // Size of each tile in pixels
+const GAME_MAP_CELL_DIMENSIONS = 32; // 32 x 32 cells
+
 const CAMERA_LEFT_OFFSET_PX = 66; // Offset the camera to the right by 66 pixels
 const CAMERA_TOP_OFFSET_PX = 42; // Offset the camera down by 42 pixels
-const LOOKAHEAD_DISTANCE = 20; 
+const LOOKAHEAD_DISTANCE = 6; 
 
 // Define the directions we can move
 const DIRECTION = {
@@ -11,24 +15,29 @@ const DIRECTION = {
 }
 
 // Map key codes to directions (up, down, left, right)
-// We might want to change which keys map to which directions
 const KEY_TO_DIRECTION = {
-  'ArrowUp': DIRECTION.up,
-  'ArrowLeft': DIRECTION.left,
-  'ArrowRight': DIRECTION.right,
-  'ArrowDown': DIRECTION.down,
+	'ArrowUp': DIRECTION.up,
+	'ArrowLeft': DIRECTION.left,
+	'ArrowRight': DIRECTION.right,
+	'ArrowDown': DIRECTION.down,
+	'KeyW': DIRECTION.up,
+	'KeyA': DIRECTION.left,
+	'KeyD': DIRECTION.right,
+	'KeyS': DIRECTION.down,
 }
 
 const character = document.querySelector(".character"); // Get the character element
 const map = document.querySelector(".map"); // Get the map element
+
+// Get the pixel size from the CSS custom property --pixel-size
 const pixelSize = parseInt(
   getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
 );
 
 // Set the initial position of the character and camera
 // Depending on the size of the browser window, the positions might get multiplied by 2, 3,or 4
-let x = 100
-let y = 40;
+let x = 0
+let y = 0;
 let camX = x; 
 let camY = y; 
 let pressedDirections = []; // State of which arrow keys we are holding down
@@ -58,9 +67,9 @@ function lerp(currentVal, desiredVal, time) {
 
 function easeInQuad(t) {return t * t;}
 
-function convertCSSPositionToArrayIndex(x, y, pixelSize) {
-	const columnIndex = Math.floor(x / pixelSize);
-	const rowIndex = Math.floor(y / pixelSize);
+function convertCSSPositionToArrayIndex(x, y) {
+	const columnIndex = Math.ceil(x / 4);
+	const rowIndex = Math.ceil(y / 4);
 	return { rowIndex, columnIndex };
 }
 
@@ -76,8 +85,9 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
    // Get the direction we are moving
   const direction = pressedDirections[0]; 
   if (direction) {
-    if (direction === DIRECTION.right) {x += speed;} 
-    if (direction === DIRECTION.left) {x -= speed;}
+    console.log("Player is moving", direction);
+    if (direction === DIRECTION.right ) {x += speed;} 
+    if (direction === DIRECTION.left ) {x -= speed;}
     if (direction === DIRECTION.down) {y += speed;}
     if (direction === DIRECTION.up) {y -= speed;}
 
@@ -86,16 +96,6 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   }
    // Set the walking attribute to true if we are moving and false if we are not
   character.setAttribute("walking", direction ? "true" : "false");
-
-  // //Limits (gives the illusion of walls)
-  // const leftLimit = -8;
-  // const rightLimit = (16 * 32)+8;
-  // const topLimit = -8 + 32;
-  // const bottomLimit = (32 * 7);
-  // if (x < leftLimit) { x = leftLimit; }
-  // if (x > rightLimit) { x = rightLimit; }
-  // if (y < topLimit) { y = topLimit; }
-  // if (y > bottomLimit) { y = bottomLimit; }
 
   //Camera Look Ahead
   let lahX = 0; 
@@ -156,8 +156,13 @@ requestAnimationFrame(tick);
 document.addEventListener("keydown", (e) => {
    // Get the direction from the key code and add it to the pressedDirections array
 	const dir = KEY_TO_DIRECTION[e.code];
-	const { rowIndex, columnIndex } = convertCSSPositionToArrayIndex(x, y, pixelSize);
+	const { rowIndex, columnIndex } = convertCSSPositionToArrayIndex(x, y);
 	console.log(`Player walked on grid at row ${rowIndex}, column ${columnIndex}`);
+  if (isTileWalkable(rowIndex, rowIndex)) {
+    console.log("Player can walk here");
+  }else {
+    console.log("Player can't walk here");
+  }
   if (dir && pressedDirections.indexOf(dir) === -1) {
    lastInputTimeMs = performance.now(); // Set the last input time to the current time
    pressedDirections.unshift(dir) // Add the direction to the beginning of the array
