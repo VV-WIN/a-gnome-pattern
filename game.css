@@ -1,6 +1,8 @@
 :root {
+  /* Actual display size of each individual display*/
   --pixel-size: 2px;
-  --grid-cell: calc(var(--pixel-size) * 16);
+  /* Grid cell is the natural pixel size times 16 */
+  --grid-cell: calc(var(--pixel-size) * 16); 
   --bg: #c5ffb8;
 }
 
@@ -44,7 +46,8 @@ body {
   image-rendering: pixelated;
   background-image: url("assets/_composite.png");
   background-size: 100%;
-  width: calc(32 * var(--grid-cell));
+  /* Our image is 32x32 cells */
+  width: calc(32 * var(--grid-cell)); 
   height: calc(32 * var(--grid-cell));
   position: relative;
 }
