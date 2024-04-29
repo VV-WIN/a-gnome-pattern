@@ -83,6 +83,11 @@ function isTileWalkable(columnPos, rowPos) {
 
 function updatePlayerVisualPosition() {
   // Update character position in the CSS
+	  // Update camera
+		const camTransformLeft = -cameraPosition.x * pixelSize + (pixelSize * CAMERA_LEFT_OFFSET_PX);
+		const camTransformTop = -cameraPosition.y * pixelSize + (pixelSize * CAMERA_TOP_OFFSET_PX);
+		// Set the camera position in the CSS 
+		map.style.transform = `translate3d( ${camTransformLeft}px, ${camTransformTop}px, 0 )`;
   character.style.transform = `translate3d( ${playerPosition.x * pixelSize}px, ${playerPosition.y * pixelSize}px, 0 )`;
 }
 
@@ -127,11 +132,6 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   cameraPosition.x = lerp(cameraPosition.x, camDesX, t);
   cameraPosition.y = lerp(cameraPosition.y, camDesY, t);
 
-  // Update camera
-  const camTransformLeft = -cameraPosition.x * pixelSize + (pixelSize * CAMERA_LEFT_OFFSET_PX);
-  const camTransformTop = -cameraPosition.y * pixelSize + (pixelSize * CAMERA_TOP_OFFSET_PX);
-  // Set the camera position in the CSS 
-  map.style.transform = `translate3d( ${camTransformLeft}px, ${camTransformTop}px, 0 )`;
 	updatePlayerVisualPosition();
 }
 
