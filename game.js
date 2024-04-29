@@ -78,7 +78,7 @@ function isTileWalkable(columnPos, rowPos) {
   if (rowPos < 0 || rowPos >= gameMap2DArray.length || columnPos < 0 || columnPos >= gameMap2DArray[rowPos].length) { 
     return false;
   }
-	return gameMap2DArray[rowPos][columnPos] === 0; // 0 = walkable, 1 = boundary
+  return gameMap2DArray[rowPos][columnPos] !== 1; // 0 = walkable, 1 = boundary
 }
 
 function updatePlayerVisualPosition() {
@@ -95,27 +95,32 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   // Get the direction we are moving
 	let newX = playerPosition.x;
 	let newY = playerPosition.y;
-
   const direction = pressedDirections[0]; 
+  
   if (direction) {
     if (direction === DIRECTION.right ) {newX += speed;} 
     if (direction === DIRECTION.left ) {newX -= speed;}
     if (direction === DIRECTION.down) {newY += speed;}
     if (direction === DIRECTION.up) {newY -= speed;}
     // Set the direction the character is facing which will be used to change the sprite in the CSS
-    character.setAttribute("facing", direction); 
+    character.setAttribute("facing", direction); // Set the direction the character is facing which will be used to change the sprite in the CSS
   }
+  
   // Set the walking attribute to true if we are moving and false if we are not
   character.setAttribute("walking", direction ? "true" : "false");
 	const { columnIndex, rowIndex } = convertCSSPositionToArrayIndex(newX, newY);
-	if (isTileWalkable(columnIndex, rowIndex)) {
-		console.log("Player can walk here");
+  if (isTileWalkable(columnIndex, rowIndex)) {
+    console.log("Player can walk here");
+    const cellValue = gameMap2DArray[rowIndex][columnIndex];
+    if (cellValue === 0) {speed = 1;}
+    if (cellValue === 2) {speed = .75;}
+    if (cellValue === 3) {speed = .50;}
+    if (cellValue === 4) {speed = .25;}
 		playerPosition.x = newX;
     playerPosition.y = newY;
 	}else {
-		console.log("Collision detected at:", columnIndex, rowIndex);
+    console.log("Collision detected at:", columnIndex, rowIndex);
 	}
-
   //Camera Look Ahead
   let lahX = 0; 
   let lahY = 0;
