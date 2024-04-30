@@ -1,8 +1,9 @@
 # a-gnome-pattern
-A game simple inspired by a moment at the lake with my partner and our dog where we encountered a rock maze and a gnome.
-It made us recall walking the "pattern" in The Chronicles of Amber by [Roger Zelazny](https://en.wikipedia.org/wiki/Roger_Zelazny).
-My hope was to create an experience similar.
 
+A game inspired by a moment at the lake with my partner and our dog where we encountered a rock maze and a gnome.
+It made us recall walking the "pattern" in The Chronicles of Amber by [Roger Zelazny](https://en.wikipedia.org/wiki/Roger_Zelazny).
+I hope to create an experience similar.
+![The Gnome](PNhzARZQ.jpeg)
 ## How to launch the game
 Clone or fork this repo to your local machine and open the game.html file in your browser. 
 
