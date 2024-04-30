@@ -53,7 +53,7 @@ body {
 }
 
 .character {
-  width: calc(var(--grid-cell) * 2);
+  width: calc(var(--grid-cell) * 2); 
   height: calc(var(--grid-cell) * 2);
   position: absolute;
   overflow: hidden;
@@ -81,6 +81,38 @@ body {
 
 .character[walking="true"] .character-spritesheet {
   animation: walkAnimation 0.6s steps(4) infinite;
+}
+
+.message-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85); /* Semi-transparent black background */
+  color: red; /* Red text to make it more ominous */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  font-family: 'Gothic', sans-serif;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 2s;
+  z-index: 200;
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      text-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red, 0 0 70px red;
+  }
+  20%, 24%, 55% {        
+      text-shadow: none;
+  }
+}
+
+.message-overlay {
+  animation: flicker 3s infinite;
 }
 
 @keyframes walkAnimation {

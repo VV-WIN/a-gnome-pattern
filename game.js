@@ -180,6 +180,23 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
+window.addEventListener('load', function() {
+  const message = document.getElementById('start-message');
+  // Fade in the message
+  setTimeout(() => {
+      message.style.opacity = 1;
+  }, 500); // Delay the fade in to give effect
+
+  // Fade out the message after a few seconds
+  setTimeout(() => {
+      message.style.opacity = 0;
+      // Optional: Remove the message from display after fading out
+      setTimeout(() => {
+          message.style.display = 'none';
+      }, 2000); // Wait for the fade out transition to finish
+  }, 4000); // Display time of the message
+});
+
 window.addEventListener("resize", function(){
   // Update the camera and character position when the window is resized
   console.log('Window was resized. This is the pixelSize', pixelSize);
