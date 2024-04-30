@@ -11,6 +11,7 @@
 	"layers": [
 		"Background.png",
 		"Foreground.png",
+		"Gnome.png",
 		"IntGrid.png"
 	],
 	"entities" : {}

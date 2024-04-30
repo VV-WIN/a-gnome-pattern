@@ -113,9 +113,9 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
     console.log("Player can walk here");
     const cellValue = gameMap2DArray[rowIndex][columnIndex];
     if (cellValue === 0) {speed = 1;}
-    if (cellValue === 2) {speed = .75;}
-    if (cellValue === 3) {speed = .50;}
-    if (cellValue === 4) {speed = .25;}
+    if (cellValue === 2) {speed = .50;}
+    if (cellValue === 3) {speed = .25;}
+    if (cellValue === 4) {speed = .10;}
 		playerPosition.x = newX;
     playerPosition.y = newY;
 	}else {
@@ -178,6 +178,22 @@ document.addEventListener("keyup", (e) => {
   if (index > -1) { 
     pressedDirections.splice(index, 1) // Remove the direction from the array
   }
+});
+
+window.addEventListener('load', function() {
+  const message = document.getElementById('start-message');
+  // Fade in the message
+  setTimeout(() => {
+      message.style.opacity = 1;
+  }, 500); // Delay the fade in to give effect
+
+  // Fade out the message after a few seconds
+  setTimeout(() => {
+      message.style.opacity = 0;
+      setTimeout(() => {
+          message.style.display = 'none';
+      }, 2000); // Wait for the fade out transition to finish
+  }, 4000); // Display time of the message
 });
 
 window.addEventListener("resize", function(){
