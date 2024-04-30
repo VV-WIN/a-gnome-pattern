@@ -2,6 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="game.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   </head>
   <body>
     <div class="camera">
@@ -13,6 +14,9 @@
           <div class="character-spritesheet pixel-art"></div>
         </div>
       </div>
+      <div id="end-game-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); text-align: center; align-items: center; justify-content: center; flex-direction: column;">
+        <h1 id="congrats-message" style="color: white;">you made it</h1>
+    </div>
     </div>
     <script src="game.js"></script>
   </body>
