@@ -91,6 +91,27 @@ function updatePlayerVisualPosition() {
   character.style.transform = `translate3d( ${playerPosition.x * pixelSize}px, ${playerPosition.y * pixelSize}px, 0 )`;
 }
 
+function startConfetti() {
+  confetti({
+      particleCount: 20,
+      spread: 100,
+      origin: { y: 0 }
+  });
+}
+
+function reloadGameAfterDelay() {
+  setTimeout(function() {
+      window.location.reload();
+  }, 15000); // 15 seconds
+}
+
+function endGameSequence() {
+  const endGameContainer = document.getElementById('end-game-container');
+  endGameContainer.style.display = 'flex'; // Show the end game container
+  startConfetti(); // Start the confetti effect
+  reloadGameAfterDelay() 
+}
+
 const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   // Get the direction we are moving
 	let newX = playerPosition.x;
@@ -110,12 +131,12 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   character.setAttribute("walking", direction ? "true" : "false");
 	const { columnIndex, rowIndex } = convertCSSPositionToArrayIndex(newX, newY);
   if (isTileWalkable(columnIndex, rowIndex)) {
-    console.log("Player can walk here");
     const cellValue = gameMap2DArray[rowIndex][columnIndex];
     if (cellValue === 0) {speed = 1;}
     if (cellValue === 2) {speed = .50;}
     if (cellValue === 3) {speed = .25;}
     if (cellValue === 4) {speed = .10;}
+    if (cellValue === 5) {endGameSequence();}
 		playerPosition.x = newX;
     playerPosition.y = newY;
 	}else {
@@ -136,7 +157,6 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   t = easeInQuad(t); // Ease in the value
   cameraPosition.x = lerp(cameraPosition.x, camDesX, t);
   cameraPosition.y = lerp(cameraPosition.y, camDesY, t);
-
 	updatePlayerVisualPosition();
 }
 
@@ -198,5 +218,4 @@ window.addEventListener('load', function() {
 
 window.addEventListener("resize", function(){
   // Update the camera and character position when the window is resized
-  console.log('Window was resized. This is the pixelSize', pixelSize);
 })

@@ -83,6 +83,16 @@ body {
   animation: walkAnimation 0.6s steps(4) infinite;
 }
 
+@keyframes walkAnimation {
+  from {
+    transform: translate3d(0%, 0%, 0);
+  }
+
+  to {
+    transform: translate3d(-100%, 0%, 0);
+  }
+}
+
 .message-overlay {
   position: absolute;
   top: 0;
@@ -113,14 +123,4 @@ body {
 
 .message-overlay {
   animation: flicker 3s infinite;
-}
-
-@keyframes walkAnimation {
-  from {
-    transform: translate3d(0%, 0%, 0);
-  }
-
-  to {
-    transform: translate3d(-100%, 0%, 0);
-  }
 }
