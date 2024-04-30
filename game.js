@@ -93,11 +93,12 @@ function updatePlayerVisualPosition() {
 
 function startConfetti() {
   confetti({
-      particleCount: 10,
-      spread: 10,
-      origin: { y: 0.6 }
+      particleCount: 20,
+      spread: 100,
+      origin: { y: 0 }
   });
 }
+
 function reloadGameAfterDelay() {
   setTimeout(function() {
       window.location.reload();
@@ -130,12 +131,11 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   character.setAttribute("walking", direction ? "true" : "false");
 	const { columnIndex, rowIndex } = convertCSSPositionToArrayIndex(newX, newY);
   if (isTileWalkable(columnIndex, rowIndex)) {
-    console.log("Player can walk here");
     const cellValue = gameMap2DArray[rowIndex][columnIndex];
     if (cellValue === 0) {speed = 1;}
-    if (cellValue === 2) {speed = 1;}
-    if (cellValue === 3) {speed = 1;}
-    if (cellValue === 4) {speed = 1;}
+    if (cellValue === 2) {speed = .50;}
+    if (cellValue === 3) {speed = .25;}
+    if (cellValue === 4) {speed = .10;}
     if (cellValue === 5) {endGameSequence();}
 		playerPosition.x = newX;
     playerPosition.y = newY;
@@ -157,7 +157,6 @@ const moveCharacter = (lastMoveTimeMs, currentTimeMs) => {
   t = easeInQuad(t); // Ease in the value
   cameraPosition.x = lerp(cameraPosition.x, camDesX, t);
   cameraPosition.y = lerp(cameraPosition.y, camDesY, t);
-
 	updatePlayerVisualPosition();
 }
 
@@ -219,5 +218,4 @@ window.addEventListener('load', function() {
 
 window.addEventListener("resize", function(){
   // Update the camera and character position when the window is resized
-  console.log('Window was resized. This is the pixelSize', pixelSize);
 })
