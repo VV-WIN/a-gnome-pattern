@@ -17,3 +17,6 @@ Using the directional keys or WASD, simply walk the pattern.
 
 ## Personal Goals
 To quiet the fear that tells me I *can't*. You **can** and **will** do this. I believe in you, me. xoxo 
+Additions I'd like to add:
+- Swap the location of the player chacter and the gnome
+- Add music and warp it depending on player speed
